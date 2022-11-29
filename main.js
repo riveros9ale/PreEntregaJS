@@ -19,13 +19,15 @@ const impuestoIva = precioDeljuego *21/100;
 const impuestoPais = precioDeljuego *35/100;
 const impuestoMonedaExtranjera = precioDeljuego *8/100
 
-let precioFinal = precioDeljuego + impuestoIva + impuestoPais + impuestoMonedaExtranjera;
 
-console.log(nombreDeljuego + " cuesta un total de: " + precioFinal.toFixed(2));
+//Función Flecha
+const sumaPreciofinal = (a, b, c, d) => a + b + c + d;
+console.log(nombreDeljuego + " cuesta un total de: " + sumaPreciofinal(precioDeljuego, impuestoIva, impuestoPais, impuestoMonedaExtranjera).toFixed(2));
 
-if (precioFinal < 200){
+/* console.log(nombreDeljuego + " cuesta un total de: " + precioFinal.toFixed(2)); */
+if (sumaPreciofinal < 200){
     alert("El juego es barato");
-} else if (precioFinal >= 200 && precioFinal <= 300){
+} else if (sumaPreciofinal >= 200 && sumaPreciofinal <= 300){
     alert("El juego tiene buen precio");
 } else {
     alert("El juego es caro")

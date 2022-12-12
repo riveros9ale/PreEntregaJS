@@ -19,16 +19,34 @@ const impuestoIva = precioDeljuego *21/100;
 const impuestoPais = precioDeljuego *35/100;
 const impuestoMonedaExtranjera = precioDeljuego *8/100
 
-
 //Función Flecha
-const sumaPreciofinal = (a, b, c, d) => a + b + c + d;
-console.log(nombreDeljuego + " cuesta un total de: " + sumaPreciofinal(precioDeljuego, impuestoIva, impuestoPais, impuestoMonedaExtranjera).toFixed(2));
+const sumaPreciofinal = (a, b, c, d) => {
+    return a + b + c + d;
+}
+alert(nombreDeljuego + " cuesta un total de: " + sumaPreciofinal(precioDeljuego, impuestoIva, impuestoPais, impuestoMonedaExtranjera).toFixed(2));
 
-/* console.log(nombreDeljuego + " cuesta un total de: " + precioFinal.toFixed(2)); */
 if (sumaPreciofinal < 200){
     alert("El juego es barato");
 } else if (sumaPreciofinal >= 200 && sumaPreciofinal <= 300){
     alert("El juego tiene buen precio");
 } else {
-    alert("El juego es caro")
+    alert("El juego es caro");
 }
+
+const juegosDelaTienda = ["Dragon Ball", "Dark Souls", "God of War", "FIFA 23"]
+const juegos = [
+    {nombre: "Dragon Ball", precio: 2500, genero: "Acción"},
+    {nombre: "FIFA", precio: 7000, genero: "Deportes"},
+    {nombre: "EFOOTBALL", precio: 8000, genero: "Deportes"},
+    {nombre: "God of War", precio: 5000, genero: "Acción"},
+    {nombre: "Counter Strike", precio: 1200, genero: "Shooter"},
+    {nombre: "Outlast", precio: 1200, genero: "Horror"},
+    {nombre: "Amnesia", precio: 1200, genero: "Horror"},
+    {nombre: "Call Of Duty", precio: 3200, genero: "Shooter"}
+]
+
+const juegoElegido = prompt("Ingrese el nombre del Juego que desea buscar: ");
+console.log(juegos.find((juego) => juego.nombre === juegoElegido));
+
+const generoElegido = juegos.filter((juego) => juego.genero.includes("Deportes"));
+console.log(generoElegido);

@@ -1,52 +1,142 @@
-/*Pre-Entrega 1*/
-let nombreUsuario = prompt("Ingrese nombre de Usuario")
-let password = parseInt(prompt("Ingrese su contraseña"))
-const passwordAutorizado = 1234
-
-for (let i = 0; i < 2; i++) {
-    if (password === passwordAutorizado) {
-        alert("Inicio Correctamente su Usuario");
-        break;
-    } else {
-        password = parseInt(prompt("Vuelva a Intentarlo"));
-        alert("Contraseña incorrecta")
+class Producto {
+    constructor(id, nombre, precio, img) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.img = img;
+        this.cantidad = 1; 
     }
 }
 
-let nombreDeljuego = prompt("Ingrese el Nombre del Juego:")
-let precioDeljuego = parseInt(prompt("Ingrese el Precio de su juego:"));
-const impuestoIva = precioDeljuego *21/100;
-const impuestoPais = precioDeljuego *35/100;
-const impuestoMonedaExtranjera = precioDeljuego *8/100
+const dragonball = new Producto(1, "Dragon Ball", 449, "img/dbbt3.png");
+const efootball = new Producto(2, "Efootball", 1600, "img/efootball.png");
+const fifa = new Producto(3, "FIFA", 3200, "img/fifa.png");
+const godofwar = new Producto(4, "God Of War", 2500, "img/godofwar.png");
+const outlast = new Producto(5, "Outlast", 300, "img/outlast.png");
+const amnesia = new Producto(6, "Amnesia", 58, "img/amnesia.png");
+const callofduty = new Producto(7, "Call Of Duty", 3000, "img/callofduty.png");
+const counterstrike = new Producto(8, "Counter Strike", 1800, "img/cs.png");
 
-//Función Flecha
-const sumaPreciofinal = (a, b, c, d) => {
-    return a + b + c + d;
+
+const productos = [dragonball, efootball, fifa, godofwar, outlast, amnesia, callofduty, counterstrike];
+
+
+let carrito = []; 
+
+if(localStorage.getItem("carrito")){
+    carrito = JSON.parse(localStorage.getItem("carrito"));
 }
-alert(nombreDeljuego + " cuesta un total de: " + sumaPreciofinal(precioDeljuego, impuestoIva, impuestoPais, impuestoMonedaExtranjera).toFixed(2));
 
-if (sumaPreciofinal < 200){
-    alert("El juego es barato");
-} else if (sumaPreciofinal >= 200 && sumaPreciofinal <= 300){
-    alert("El juego tiene buen precio");
-} else {
-    alert("El juego es caro");
+
+const contenedorProductos = document.getElementById("contenedorProductos");
+
+const mostrarProductos = () => {
+    productos.forEach( producto => {
+        const card = document.createElement("div");
+        card.classList.add("col-xl-3", "col-md-6", "col-xs-12");
+        card.innerHTML = `
+                <div class="card">
+                    <img src="${producto.img}" class="card-img-top imgProductos" alt="${producto.nombre}">
+                    <div class= "card-body">
+                        <h5>${producto.nombre}</h5>
+                        <p> ${producto.precio} </p>
+                        <button class="btn colorBoton" id="boton${producto.id}" > Agregar al Carrito </button>
+                    </div>
+                </div>
+                        `
+        contenedorProductos.appendChild(card);
+
+        const boton = document.getElementById(`boton${producto.id}`);
+        boton.addEventListener("click", () => {
+            agregarAlCarrito(producto.id);
+        })
+    })
 }
 
-const juegosDelaTienda = ["Dragon Ball", "Dark Souls", "God of War", "FIFA 23"]
-const juegos = [
-    {nombre: "Dragon Ball", precio: 2500, genero: "Acción"},
-    {nombre: "FIFA", precio: 7000, genero: "Deportes"},
-    {nombre: "EFOOTBALL", precio: 8000, genero: "Deportes"},
-    {nombre: "God of War", precio: 5000, genero: "Acción"},
-    {nombre: "Counter Strike", precio: 1200, genero: "Shooter"},
-    {nombre: "Outlast", precio: 1200, genero: "Horror"},
-    {nombre: "Amnesia", precio: 1200, genero: "Horror"},
-    {nombre: "Call Of Duty", precio: 3200, genero: "Shooter"}
-]
+mostrarProductos();
 
-const juegoElegido = prompt("Ingrese el nombre del Juego que desea buscar: ");
-console.log(juegos.find((juego) => juego.nombre === juegoElegido));
 
-const generoElegido = juegos.filter((juego) => juego.genero.includes("Deportes"));
-console.log(generoElegido);
+const agregarAlCarrito = (id) => {
+    const productoEnCarrito = carrito.find(producto => producto.id === id);
+    if(productoEnCarrito) {
+        productoEnCarrito.cantidad++;
+    } else {
+        const producto = productos.find(producto => producto.id === id);
+        carrito.push(producto);
+    }
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    calcularTotal();
+}
+ 
+
+const contenedorCarrito = document.getElementById("contenedorCarrito");
+const verCarrito = document.getElementById("verCarrito")
+
+verCarrito.addEventListener("click", () => {
+    mostrarCarrito();
+})
+
+
+const mostrarCarrito = () => {
+    contenedorCarrito.innerHTML = "";
+
+    carrito.forEach(producto => {
+        const card = document.createElement("div");
+        card.classList.add("col-xl-3", "col-md-6", "col-xs-12");
+        card.innerHTML = `
+                <div class="card">
+                    <img src="${producto.img}" class="card-img-top imgProductos" alt="${producto.nombre}">
+                    <div class= "card-body">
+                        <h5>${producto.nombre}</h5>
+                        <p> ${producto.precio} </p>
+                        <p> ${producto.cantidad} </p>
+                        <button class="btn colorBoton" id="eliminar${producto.id}" > Eliminar Producto </button>
+                    </div>
+                </div>
+                        `
+        contenedorCarrito.appendChild(card);
+
+        const boton = document.getElementById(`eliminar${producto.id}`);
+        boton.addEventListener("click", () => {
+            eliminarDelCarrito(producto.id);
+        })
+
+    })
+    calcularTotal();
+}
+
+
+const eliminarDelCarrito = (id) => {
+    const producto = carrito.find(producto => producto.id === id);
+    const indice = carrito.indexOf(producto);
+    carrito.splice(indice, 1);
+    mostrarCarrito();
+ 
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+
+const vaciarCarrito = document.getElementById("vaciarCarrito");
+
+vaciarCarrito.addEventListener("click", () => {
+    eliminarTodoElCarrito();
+})
+
+
+const eliminarTodoElCarrito = () => {
+    carrito = [];
+    mostrarCarrito();
+
+    localStorage.clear();
+}
+
+
+const total = document.getElementById("total");
+
+const calcularTotal = () => {
+    let totalCompra = 0;
+    carrito.forEach(producto => {
+        totalCompra += producto.precio * producto.cantidad;
+    })
+    total.innerHTML = `Total: $${totalCompra}`;
+}
